@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import pygame, time, random
 
+a =1
+
 #basic stuff
 pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()

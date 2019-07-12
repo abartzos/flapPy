@@ -20,23 +20,23 @@ green = (0,255,0)
 lightBlue = (85, 149, 252)
 
 birdImg = pygame.image.load('images/bird.png')
-gameLoopBool = True
-startBool = True
 
 poleThickness = 30
 poleX = displayWidth - poleThickness
 
 pole1Y = 0
-pole2Y = 300 
+pole2Y = 300
 
 pole1H = 100
-pole2H = 100    
+pole2H = 100
 
 pole1 = None
 pole2 = None
 helpPole = None
 
 birdYChange = 0
+score = 0
+lost = False
 
 class Pole(object):
     def __init__(self,color):
@@ -45,7 +45,7 @@ class Pole(object):
         self.x = x
         self.y = y
         self.w = w
-        self.h = h 
+        self.h = h
         self.rect = pygame.Rect(self.x,self.y,self.w,self.h)
         pygame.draw.rect(gameDisplay, self.color, (x,y,w,h))
 
@@ -72,17 +72,17 @@ def displayNewPoles():
     pole1 = Pole(green)
     pole2 = Pole(green)
     helpPole = Pole(green)
-    
+
     pole2H = random.randint(100,200)
     pole1H = random.randint(100,200)
-    
+
     poleGap = displayWidth - pole1H - pole2Y
     pole2Y = displayWidth - poleGap - pole1H
-    
+
     pole1.display(poleX, pole1Y, poleThickness, pole1H)
     pole2.display(poleX, pole2Y, poleThickness, pole2H)
     helpPole.display(poleX, displayWidth - 50,poleThickness, displayWidth)
-        
+
 def updatePoles():
     global poleGap, pole1H, pole2H, poleX, pole2Y
     global pole1, pole2, helpPole
@@ -93,49 +93,49 @@ def updatePoles():
 
 
 def jump():
-    JUMP = True
+    global birdYChange
+    print(1)
+    birdYChange = -10
 
-def game():
+def start():
     global poleGap, pole1H, pole2H, poleX, pole2Y, birdYChange
-    global pole1, pole2, helpPole, enemiesX
-    global JUMP, LOST
+    global pole1, pole2, helpPole
+    # the values to be exported
+    global lost, score
 
-    LOST = False
+    lost = False
+    score = 0
 
     gameDisplay.fill(lightBlue)
 
-    score = 0    
     displayNewPoles()
     bird = Sprite(birdImg)
     birdY = int(displayHeight/2)
     birdX = 20 #(known bird width)
     birdYChange = 2
     bird.display(birdX,birdY)
-    
-    while not LOST:
+
+    while not lost:
         gameDisplay.fill(lightBlue)
-        if JUMP:
-            birdYChange = -10
-            JUMP = False
-        else:
-            birdYChange = 2
+
         birdY += birdYChange
         bird.display(birdX,birdY)
-        
+
         poleX -= 5
-        
+
         updatePoles()
-  
+
         if (birdY < 0 or birdY > displayHeight or objectsCollide(pole1, bird) or objectsCollide(pole2, bird)):
-            LOST == True
-        if (bird.x == poleX and not objectsCollide(pole1, bird) 
+            lost = True
+        if (bird.x == poleX and not objectsCollide(pole1, bird)
         and not objectsCollide(pole2,bird)
         and not objectsCollide(helpPole,bird)):
             score += 1
             poleX = displayWidth - poleThickness
             displayNewPoles()
 
+        birdYChange = 2
         pygame.display.update()
         clock.tick(80)
 
-game()
+    return score

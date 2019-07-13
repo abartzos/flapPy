@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame, time, random
 
 #basic stuff
@@ -94,12 +96,11 @@ def updatePoles():
 
 def jump():
     global birdYChange
-    print(1)
     birdYChange = -10
 
-def start():
+def init():
     global poleGap, pole1H, pole2H, poleX, pole2Y, birdYChange
-    global pole1, pole2, helpPole
+    global pole1, pole2, helpPole, birdY, bird, birdX
     # the values to be exported
     global lost, score
 
@@ -111,31 +112,34 @@ def start():
     displayNewPoles()
     bird = Sprite(birdImg)
     birdY = int(displayHeight/2)
-    birdX = 20 #(known bird width)
+    birdX = 20 #(known bird x)
     birdYChange = 2
     bird.display(birdX,birdY)
 
-    while not lost:
-        gameDisplay.fill(lightBlue)
+def frame():
+    global poleGap, pole1H, pole2H, poleX, pole2Y, birdYChange
+    global pole1, pole2, helpPole, birdY, bird, birdX
+    # the values to be exported
+    global lost, score
 
-        birdY += birdYChange
-        bird.display(birdX,birdY)
+    gameDisplay.fill(lightBlue)
 
-        poleX -= 5
+    birdY += birdYChange
+    bird.display(birdX,birdY)
 
-        updatePoles()
+    poleX -= 5
 
-        if (birdY < 0 or birdY > displayHeight or objectsCollide(pole1, bird) or objectsCollide(pole2, bird)):
-            lost = True
-        if (bird.x == poleX and not objectsCollide(pole1, bird)
-        and not objectsCollide(pole2,bird)
-        and not objectsCollide(helpPole,bird)):
-            score += 1
-            poleX = displayWidth - poleThickness
-            displayNewPoles()
+    updatePoles()
 
-        birdYChange = 2
-        pygame.display.update()
-        clock.tick(80)
+    if (birdY < 0 or birdY > displayHeight or objectsCollide(pole1, bird) or objectsCollide(pole2, bird)):
+        lost = True
+    if (bird.x == poleX and not objectsCollide(pole1, bird)
+    and not objectsCollide(pole2,bird)
+    and not objectsCollide(helpPole,bird)):
+        score += 1
+        poleX = displayWidth - poleThickness
+        displayNewPoles()
 
-    return score
+    birdYChange = 2
+    pygame.display.update()
+    clock.tick(80)

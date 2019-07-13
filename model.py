@@ -3,12 +3,10 @@ import random
 
 # this model makes the bird jump randomly
 
-flp.init()
-while not flp.lost:
-    flp.frame()
-    if random.choice([0,1,0,0,0,0]):
-        flp.jump()
+game = flp.Game()
+while not game.hit():
+    game.frame()
+    if random.choice([0,0,0,0,1]):
+        game.jump()
 
-
-print('Score: ', flp.score)
-    
+print(game.score())
